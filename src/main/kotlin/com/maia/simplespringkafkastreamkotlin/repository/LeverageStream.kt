@@ -1,8 +1,8 @@
 package com.maia.simplespringkafkastreamkotlin.repository
 
 import com.maia.springkafkastreamkotlin.repository.LeveragePrice
-import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+import jakarta.annotation.PostConstruct
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.KafkaStreams
@@ -16,8 +16,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore
 import org.springframework.context.annotation.Bean
 import org.springframework.kafka.config.StreamsBuilderFactoryBean
 import org.springframework.stereotype.Repository
-import java.util.*
-import javax.annotation.PostConstruct
 
 @Repository
 class LeverageStream {
