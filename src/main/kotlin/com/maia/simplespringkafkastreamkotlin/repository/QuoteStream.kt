@@ -5,6 +5,7 @@ import com.maia.springkafkastreamkotlin.repository.LeveragePrice
 import com.maia.springkafkastreamkotlin.repository.ProcessedQuote
 import com.maia.springkafkastreamkotlin.repository.StockQuote
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+import jakarta.annotation.PostConstruct
 import org.apache.kafka.common.serialization.Serdes
 import org.apache.kafka.common.utils.Bytes
 import org.apache.kafka.streams.KafkaStreams
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Repository
 import java.time.Duration
 import java.time.Instant
 import java.util.function.BiFunction
-import javax.annotation.PostConstruct
 
 @Repository
 class QuoteStream(val leveragepriceGKTable: GlobalKTable<String, LeveragePrice>) {
@@ -78,7 +78,9 @@ class QuoteStream(val leveragepriceGKTable: GlobalKTable<String, LeveragePrice>)
         // branches it and pushes to proper topics
         KafkaStreamBrancher<String, ProcessedQuote>()
             .branch({ symbolKey, _ -> symbolKey.equals("APPL", ignoreCase = true) }, { ks -> ks.to(AAPL_STOCKS_TOPIC) })
-            .branch({ symbolKey, _ -> symbolKey.equals("GOOGL", ignoreCase = true) }, { ks -> ks.to(GOOGL_STOCKS_TOPIC) })
+            .branch(
+                { symbolKey, _ -> symbolKey.equals("GOOGL", ignoreCase = true) },
+                { ks -> ks.to(GOOGL_STOCKS_TOPIC) })
             .defaultBranch { ks -> ks.to(ALL_OTHER_STOCKS_TOPIC) }
             .onTopOf(resStream)
 
